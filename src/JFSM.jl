@@ -1,11 +1,11 @@
 module JFSM
 
-using Plots
-
 const fsm = joinpath(dirname(@__FILE__), "..", "deps", "FSM")
 
-export test_run
+export FsmType
+
+export run_fsm
 
 include("run_fsm.jl")
 
-end # module
+end
