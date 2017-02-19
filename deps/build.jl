@@ -10,4 +10,4 @@ end
 
 run(`gfortran $flags $mods $routines -o FSM.$(Libdl.dlext)`)
 
-run(`rm *.mod`)
+#run(`rm *.mod`)
