@@ -62,6 +62,8 @@ type FsmType
 
 end
 
+# Run fsm
+
 function run_fsm(md::FsmType, metdata)
 
 	# Allocate output arrays
