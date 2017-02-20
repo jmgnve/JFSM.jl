@@ -14,16 +14,16 @@ use DRIVING, only : &
   zU,                &! Wind measurement height (m)
   zvar                ! Subtract snow depth from measurement height
 
-use MODELS, only: &
-  am,                &! Snow albedo model        0 - diagnostic
-                      !                          1 - prognostic
-  cm,                &! Snow conductivity model  0 - fixed
-                      !                          1 - density function
-  dm,                &! Snow density model       0 - fixed
-                      !                          1 - prognostic
-  em,                &! Surface exchange model   0 - fixed
-                      !                          1 - stability correction
-  hm                  ! Snow hydraulics model    0 - free draining 
+!use MODELS, only: &
+!  am,                &! Snow albedo model        0 - diagnostic
+!                      !                          1 - prognostic
+!  cm,                &! Snow conductivity model  0 - fixed
+!                      !                          1 - density function
+!  dm,                &! Snow density model       0 - fixed
+!                      !                          1 - prognostic
+!  em,                &! Surface exchange model   0 - fixed
+!                      !                          1 - stability correction
+!  hm                  ! Snow hydraulics model    0 - free draining 
                       !                          1 - bucket storage
 
 use PARAMETERS, only : &
@@ -60,18 +60,18 @@ use SOIL_PARAMS, only : &
 
 implicit none
 
-character(len=70) :: &
-  met_file            ! Driving file name
+!character(len=70) :: &
+!  met_file            ! Driving file name
 
 real :: &
   hcon_min            ! Thermal conductivity of soil minerals (W/m/K)
 
-! Model configuration
-am = 0
-cm = 0
-dm = 0
-em = 0
-hm = 0
+!! Model configuration
+!am = 0
+!cm = 0
+!dm = 0
+!em = 0
+!hm = 0
 
 ! Driving data parameters
 dt = 3600

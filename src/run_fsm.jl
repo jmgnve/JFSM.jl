@@ -14,7 +14,21 @@ type FsmType
 	Tsoil::Array{Float32,1}
 	Tsurf::Array{Float32,1}
 	
+	am::Int32
+	cm::Int32
+	dm::Int32
+	em::Int32
+	hm::Int32
+		
 	function FsmType()
+		
+		# Model combinations
+		
+		am = 0;
+		cm = 0;
+		dm = 0;
+		em = 0;
+		hm = 0;		
 		
 		# Define state variables
 		
@@ -56,7 +70,7 @@ type FsmType
 		  theta[k] = fsat[k]*Vsat
 		end
 		
-		new(albs, Ds, Nsnow, Sice, Sliq, theta, Tsnow, Tsoil, Tsurf)
+		new(albs, Ds, Nsnow, Sice, Sliq, theta, Tsnow, Tsoil, Tsurf, am, cm, dm, em, hm)
 	
 	end
 
@@ -82,8 +96,8 @@ function run_fsm(md::FsmType, metdata)
 		hour  = metdata[itime, 4];
 		SW    = metdata[itime, 5];
 		LW    = metdata[itime, 6];
-		Rf    = metdata[itime, 8];
 		Sf    = metdata[itime, 7];
+		Rf    = metdata[itime, 8];
 		Ta    = metdata[itime, 9];
 		RH    = metdata[itime, 10];
 		Ua    = metdata[itime, 11];
@@ -95,9 +109,11 @@ function run_fsm(md::FsmType, metdata)
 								   Ptr{Float32},Ptr{Float32},Ptr{Float32},Ptr{Float32},Ptr{Float32},
 								   Ptr{Float32}, Ptr{Float32},
 								   Ptr{Float32},Ptr{Float32},Ptr{Int32},Ptr{Float32},Ptr{Float32},
-								   Ptr{Float32},Ptr{Float32},Ptr{Float32},Ptr{Float32}),
-								   &year, &month, &day, &hour, &SW, &LW, &Rf, &Sf, &Ta, &RH, &Ua, &Ps,
-								   md.albs, md.Ds, md.Nsnow, md.Sice, md.Sliq, md.theta, md.Tsnow, md.Tsoil, md.Tsurf)
+								   Ptr{Float32},Ptr{Float32},Ptr{Float32},Ptr{Float32},
+								   Ptr{Int32},Ptr{Int32},Ptr{Int32},Ptr{Int32},Ptr{Int32}),
+								   &year, &month, &day, &hour, &SW, &LW, &Sf, &Rf, &Ta, &RH, &Ua, &Ps,
+								   md.albs, md.Ds, md.Nsnow, md.Sice, md.Sliq, md.theta, md.Tsnow, md.Tsoil, md.Tsurf,
+								   &md.am, &md.cm, &md.dm, &md.em, &md.hm)
 
 		# Save results
 
