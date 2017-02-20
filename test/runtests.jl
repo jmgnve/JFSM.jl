@@ -27,10 +27,3 @@ hs_new = round(hs_new, 3);
 hs_old = round(hs_old, 3);
 
 @test all(hs_new .== hs_old)
-
-
-
-
-
-
-#metdata = readdlm(joinpath(Pkg.dir("JFSM"), "data\\met_CdP_0506.txt"), Float32);
