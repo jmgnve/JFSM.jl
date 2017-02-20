@@ -1,5 +1,4 @@
 
-
 # Type definitions
 
 type FsmType
@@ -19,62 +18,66 @@ type FsmType
 	dm::Int32
 	em::Int32
 	hm::Int32
-		
-	function FsmType()
-		
-		# Model combinations
-		
-		am = 0;
-		cm = 0;
-		dm = 0;
-		em = 0;
-		hm = 0;		
-		
-		# Define state variables
-		
-		rho_wat = Float32(1000.);     # Density of water (kg/m^3)
-		Tm = Float32(273.15);         # Melting point (K)
-
-		Nsmax = 3;      # Maximum number of snow layers
-		Nsoil = 4;      # Number of soil layers
-
-		albs  = Array(Float32, 1);         # Snow albedo
-		Ds    = Array(Float32, Nsmax);     # Snow layer thicknesses (m)
-		Nsnow = Array(Int32, 1);           # Number of snow layers 
-		Sice  = Array(Float32, Nsmax);     # Ice content of snow layers (kg/m^2)
-		Sliq  = Array(Float32, Nsmax);     # Liquid content of snow layers (kg/m^2)
-		theta = Array(Float32, Nsoil);     # Volumetric moisture content of soil layers
-		Tsnow = Array(Float32, Nsmax);     # Snow layer temperatures (K)
-		Tsoil = Array(Float32, Nsoil);     # Soil layer temperatures (K)
-		Tsurf = Array(Float32, 1);         # Surface skin temperature (K)
-		
-		# No snow in initial state
-
-		albs[:] = 0.8;
-		Ds[:] = 0;
-		Nsnow[:] = 0;
-		Sice[:] = 0;
-		Sliq[:] = 0;
-		Tsnow[:] = Tm;
-
-		# Initial soil profiles
-
-		fcly = Float32(0.3);
-		fsnd = Float32(0.6);
-		Vsat = 0.505 - 0.037*fcly - 0.142*fsnd;
-
-		fsat = 0.5 * ones(Float32, Nsoil);  # Initial moisture content of soil layers as fractions of saturation
-		Tsoil[:] = 285.;
-		Tsurf[1] = Tsoil[1];
-		for k = 1:Nsoil
-		  theta[k] = fsat[k]*Vsat
-		end
-		
-		new(albs, Ds, Nsnow, Sice, Sliq, theta, Tsnow, Tsoil, Tsurf, am, cm, dm, em, hm)
 	
+end
+
+
+# Outer constructor
+
+function FsmType(am, cm, dm, em, hm)
+
+	# Model combinations
+
+	am = convert(Int32, am);
+	cm = convert(Int32, cm);
+	dm = convert(Int32, dm);
+	em = convert(Int32, em);
+	hm = convert(Int32, hm);	
+
+	# Define state variables
+
+	rho_wat = Float32(1000.);     # Density of water (kg/m^3)
+	Tm = Float32(273.15);         # Melting point (K)
+
+	Nsmax = 3;      # Maximum number of snow layers
+	Nsoil = 4;      # Number of soil layers
+
+	albs  = Array(Float32, 1);         # Snow albedo
+	Ds    = Array(Float32, Nsmax);     # Snow layer thicknesses (m)
+	Nsnow = Array(Int32, 1);           # Number of snow layers 
+	Sice  = Array(Float32, Nsmax);     # Ice content of snow layers (kg/m^2)
+	Sliq  = Array(Float32, Nsmax);     # Liquid content of snow layers (kg/m^2)
+	theta = Array(Float32, Nsoil);     # Volumetric moisture content of soil layers
+	Tsnow = Array(Float32, Nsmax);     # Snow layer temperatures (K)
+	Tsoil = Array(Float32, Nsoil);     # Soil layer temperatures (K)
+	Tsurf = Array(Float32, 1);         # Surface skin temperature (K)
+
+	# No snow in initial state
+
+	albs[:] = 0.8;
+	Ds[:] = 0;
+	Nsnow[:] = 0;
+	Sice[:] = 0;
+	Sliq[:] = 0;
+	Tsnow[:] = Tm;
+
+	# Initial soil profiles
+
+	fcly = Float32(0.3);
+	fsnd = Float32(0.6);
+	Vsat = 0.505 - 0.037*fcly - 0.142*fsnd;
+
+	fsat = 0.5 * ones(Float32, Nsoil);  # Initial moisture content of soil layers as fractions of saturation
+	Tsoil[:] = 285.;
+	Tsurf[1] = Tsoil[1];
+	for k = 1:Nsoil
+	  theta[k] = fsat[k]*Vsat
 	end
 
+	FsmType(albs, Ds, Nsnow, Sice, Sliq, theta, Tsnow, Tsoil, Tsurf, am, cm, dm, em, hm)
+
 end
+
 
 # Run fsm
 
