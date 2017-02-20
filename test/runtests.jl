@@ -3,7 +3,9 @@ using Base.Test
 
 # Load driving data
 
-metdata = readdlm(joinpath(Pkg.dir("JFSM"), "data\\met_CdP_0506.txt"), Float32);
+metdata = readdlm(joinpath(dirname(@__FILE__), "..", "data", "met_CdP_0506.txt"), Float32);
+
+#metdata = readdlm(joinpath(Pkg.dir("JFSM"), "data\\met_CdP_0506.txt"), Float32);
 
 # Model data
 
