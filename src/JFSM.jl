@@ -2,7 +2,7 @@ module JFSM
 
 const fsm = joinpath(dirname(@__FILE__), "..", "deps", "FSM")
 
-export FsmType
+export FsmType, FsmInput
 
 export run_fsm
 
