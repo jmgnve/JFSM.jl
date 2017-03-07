@@ -13,14 +13,14 @@ implicit none
 logical, intent(in) :: &
   water               ! Saturation wrt water if TRUE
 
-real, intent(in) :: &
+real*8, intent(in) :: &
   P,                 &! Air pressure (Pa)
   T                   ! Temperature (K)
 
-real, intent(out) :: &
+real*8, intent(out) :: &
   Qs                  ! Saturation specific humidity
 
-real :: &
+real*8 :: &
   Tc,                &! Temperature (C)
   es                  ! Saturation vapour pressure (Pa)
 

@@ -27,10 +27,10 @@ use STATE_VARIABLES, only : &
 
 implicit none
 
-integer :: &
+integer*8 :: &
   k                   ! Level counter
 
-real :: &
+real*8 :: &
   fsat(Nsoil)         ! Initial moisture content of soil layers as fractions of saturation
 
 ! No snow in initial state

@@ -3,73 +3,62 @@
 
 type FsmType
 
-	albs::Array{Float32,1}
-	Ds::Array{Float32,1}
-	Nsnow::Array{Int32,1}
-	Sice::Array{Float32,1}
-	Sliq::Array{Float32,1}
-	theta::Array{Float32,1}
-	Tsnow::Array{Float32,1}
-	Tsoil::Array{Float32,1}
-	Tsurf::Array{Float32,1}
+	albs::Array{Float64,1}
+	Ds::Array{Float64,1}
+	Nsnow::Array{Int64,1}
+	Sice::Array{Float64,1}
+	Sliq::Array{Float64,1}
+	theta::Array{Float64,1}
+	Tsnow::Array{Float64,1}
+	Tsoil::Array{Float64,1}
+	Tsurf::Array{Float64,1}
 
-	am::Int32
-	cm::Int32
-	dm::Int32
-	em::Int32
-	hm::Int32
+	am::Int64
+	cm::Int64
+	dm::Int64
+	em::Int64
+	hm::Int64
 
 end
-
-
 
 type FsmInput
 
-	year::Float32
-	month::Float32
-	day::Float32
-	hour::Float32
-	SW::Float32
-	LW::Float32
-	Sf::Float32
-	Rf::Float32
-	Ta::Float32
-	RH::Float32
-	Ua::Float32
-	Ps::Float32
+	year::Float64
+	month::Float64
+	day::Float64
+	hour::Float64
+	SW::Float64
+	LW::Float64
+	Sf::Float64
+	Rf::Float64
+	Ta::Float64
+	RH::Float64
+	Ua::Float64
+	Ps::Float64
 
 end
-
 
 # Outer constructor
 
 function FsmType(am, cm, dm, em, hm)
 
-	# Model combinations
-
-	am = convert(Int32, am);
-	cm = convert(Int32, cm);
-	dm = convert(Int32, dm);
-	em = convert(Int32, em);
-	hm = convert(Int32, hm);
-
 	# Define state variables
 
-	rho_wat = Float32(1000.);     # Density of water (kg/m^3)
-	Tm = Float32(273.15);         # Melting point (K)
+	rho_wat = 1000.;     # Density of water (kg/m^3)
+	Tm = 273.15;         # Melting point (K)
 
 	Nsmax = 3;      # Maximum number of snow layers
 	Nsoil = 4;      # Number of soil layers
 
-	albs  = Array(Float32, 1);         # Snow albedo
-	Ds    = Array(Float32, Nsmax);     # Snow layer thicknesses (m)
-	Nsnow = Array(Int32, 1);           # Number of snow layers
-	Sice  = Array(Float32, Nsmax);     # Ice content of snow layers (kg/m^2)
-	Sliq  = Array(Float32, Nsmax);     # Liquid content of snow layers (kg/m^2)
-	theta = Array(Float32, Nsoil);     # Volumetric moisture content of soil layers
-	Tsnow = Array(Float32, Nsmax);     # Snow layer temperatures (K)
-	Tsoil = Array(Float32, Nsoil);     # Soil layer temperatures (K)
-	Tsurf = Array(Float32, 1);         # Surface skin temperature (K)
+	albs  = Array(Float64, 1);         # Snow albedo
+	Ds    = Array(Float64, Nsmax);     # Snow layer thicknesses (m)
+	Nsnow = Array(Int64, 1);           # Number of snow layers
+	Sice  = Array(Float64, Nsmax);     # Ice content of snow layers (kg/m^2)
+	Sliq  = Array(Float64, Nsmax);     # Liquid content of snow layers (kg/m^2)
+	theta = Array(Float64, Nsoil);     # Volumetric moisture content of soil layers
+	Tsnow = Array(Float64, Nsmax);     # Snow layer temperatures (K)
+	Tsoil = Array(Float64, Nsoil);     # Soil layer temperatures (K)
+	Tsurf = Array(Float64, 1);         # Surface skin temperature (K)
 
 	# No snow in initial state
 
@@ -82,11 +71,11 @@ function FsmType(am, cm, dm, em, hm)
 
 	# Initial soil profiles
 
-	fcly = Float32(0.3);
-	fsnd = Float32(0.6);
+	fcly = 0.3;
+	fsnd = 0.6;
 	Vsat = 0.505 - 0.037*fcly - 0.142*fsnd;
 
-	fsat = 0.5 * ones(Float32, Nsoil);  # Initial moisture content of soil layers as fractions of saturation
+	fsat = 0.5 * ones(Float64, Nsoil);  # Initial moisture content of soil layers as fractions of saturation
 	Tsoil[:] = 285.;
 	Tsurf[1] = Tsoil[1];
 	for k = 1:Nsoil
@@ -97,23 +86,13 @@ function FsmType(am, cm, dm, em, hm)
 
 end
 
-
-
-
-
-
-
-
-
-
-
 # Run fsm
 
 function run_fsm(md::FsmType, metdata)
 
 	# Allocate output arrays
 
-	hs = zeros(Float32, size(metdata,1));
+	hs = zeros(Float64, size(metdata,1));
 
 	# Loop over time
 
@@ -136,15 +115,15 @@ function run_fsm(md::FsmType, metdata)
 
 		# Call fsm
 
-		ccall((:fsm_, fsm), Void, (Ptr{Float32},Ptr{Float32},Ptr{Float32},Ptr{Float32},Ptr{Float32},
-								   Ptr{Float32},Ptr{Float32},Ptr{Float32},Ptr{Float32},Ptr{Float32},
-								   Ptr{Float32}, Ptr{Float32},
-								   Ptr{Float32},Ptr{Float32},Ptr{Int32},Ptr{Float32},Ptr{Float32},
-								   Ptr{Float32},Ptr{Float32},Ptr{Float32},Ptr{Float32},
-								   Ptr{Int32},Ptr{Int32},Ptr{Int32},Ptr{Int32},Ptr{Int32}),
-								   &year, &month, &day, &hour, &SW, &LW, &Sf, &Rf, &Ta, &RH, &Ua, &Ps,
-								   md.albs, md.Ds, md.Nsnow, md.Sice, md.Sliq, md.theta, md.Tsnow, md.Tsoil, md.Tsurf,
-								   &md.am, &md.cm, &md.dm, &md.em, &md.hm)
+		ccall((:fsm_, fsm), Void, (Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
+								   						 Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
+								   				 		 Ptr{Float64}, Ptr{Float64},
+								   				 		 Ptr{Float64},Ptr{Float64},Ptr{Int64},Ptr{Float64},Ptr{Float64},
+								   				 		 Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
+								   				 		 Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64}),
+								   				 		 &year, &month, &day, &hour, &SW, &LW, &Sf, &Rf, &Ta, &RH, &Ua, &Ps,
+								   				 		 md.albs, md.Ds, md.Nsnow, md.Sice, md.Sliq, md.theta, md.Tsnow, md.Tsoil, md.Tsurf,
+								   				 		 &md.am, &md.cm, &md.dm, &md.em, &md.hm)
 
 		# Save results
 
@@ -163,12 +142,12 @@ function run_fsm(md::FsmType, id::FsmInput)
 
 	# Call fsm
 
-	ccall((:fsm_, fsm), Void, (Ptr{Float32},Ptr{Float32},Ptr{Float32},Ptr{Float32},Ptr{Float32},
-														 Ptr{Float32},Ptr{Float32},Ptr{Float32},Ptr{Float32},Ptr{Float32},
-														 Ptr{Float32}, Ptr{Float32},
-														 Ptr{Float32},Ptr{Float32},Ptr{Int32},Ptr{Float32},Ptr{Float32},
-														 Ptr{Float32},Ptr{Float32},Ptr{Float32},Ptr{Float32},
-														 Ptr{Int32},Ptr{Int32},Ptr{Int32},Ptr{Int32},Ptr{Int32}),
+	ccall((:fsm_, fsm), Void, (Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
+														 Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
+														 Ptr{Float64}, Ptr{Float64},
+														 Ptr{Float64},Ptr{Float64},Ptr{Int64},Ptr{Float64},Ptr{Float64},
+														 Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
+														 Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64}),
 														 &id.year, &id.month, &id.day, &id.hour, &id.SW, &id.LW, &id.Sf, &id.Rf, &id.Ta, &id.RH, &id.Ua, &id.Ps,
 														 md.albs, md.Ds, md.Nsnow, md.Sice, md.Sliq, md.theta, md.Tsnow, md.Tsoil, md.Tsurf,
 														 &md.am, &md.cm, &md.dm, &md.em, &md.hm)

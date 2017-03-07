@@ -19,7 +19,7 @@ use DRIVING, only: &
 
 implicit none
 
-real :: &
+real*8 :: &
   Qs,                &! Saturation specific humidity
   RH                  ! Relative humidity (%)
 

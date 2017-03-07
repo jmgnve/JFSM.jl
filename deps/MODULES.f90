@@ -2,7 +2,7 @@
 ! Physical constants
 !-----------------------------------------------------------------------
 module CONSTANTS
-real, parameter :: &
+real*8, parameter :: &
   cp = 1005,         &! Specific heat capacity of dry air (J/K/kg)
   eps = 0.622,       &! Ratio of molecular weights of water and dry air
   e0 = 611.213,      &! Saturation vapour pressure at Tm (Pa)
@@ -17,7 +17,7 @@ real, parameter :: &
   Lc = 2.501e6,      &! Latent heat of condensation (J/kg)
   Lf = 0.334e6,      &! Latent heat of fusion (J/kg)
   Ls = Lc + Lf,      &! Latent heat of sublimation (J/kg)
-  R = 8.3145,        &! Universal gas constant (J/K/mol) 
+  R = 8.3145,        &! Universal gas constant (J/K/mol)
   Rgas = 287,        &! Gas constant for dry air (J/K/kg)
   Rwat = 462,        &! Gas constant for water vapour (J/K/kg)
   rho_ice = 917.,    &! Density of ice (kg/m^3)
@@ -31,9 +31,9 @@ end module CONSTANTS
 ! Daily diagnostics
 !-----------------------------------------------------------------------
 module DIAGNOSTICS
-integer :: &
+integer*8 :: &
   Nave                ! Number of timesteps in average outputs
-real :: &
+real*8 :: &
   diags(5),          &! Cumulated diagnostics
   SWint,             &! Cumulated incoming solar radiation (J/m^2)
   SWout               ! Cumulated reflected solar radiation (J/m^2)
@@ -43,18 +43,18 @@ end module DIAGNOSTICS
 ! Meteorological driving variables
 !-----------------------------------------------------------------------
 module DRIVING
-integer :: &
+integer*8 :: &
   year,              &! Year
   month,             &! Month of year
   day                 ! Day of month
 logical :: &
   zvar                ! Subtract snow depth from measurement height
-real :: &
+real*8 :: &
   dt,                &! Timestep (s)
   hour,              &! Hour of day
   zT,                &! Temperature measurement height (m)
   zU                  ! Wind speed measurement height (m)
-real :: &
+real*8 :: &
   LW,                &! Incoming longwave radiation (W/m^2)
   Ps,                &! Surface pressure (Pa)
   Qa,                &! Specific humidity (kg/kg)
@@ -69,10 +69,10 @@ end module DRIVING
 ! Grid descriptors
 !-----------------------------------------------------------------------
 module GRID
-integer, parameter :: &
+integer*8, parameter :: &
   Nsmax = 3,         &! Maximum number of snow layers
   Nsoil = 4           ! Number of soil layers
-real :: &
+real*8 :: &
   Dzsnow(Nsmax),     &! Minimum snow layer thicknesses (m)
   Dzsoil(Nsoil)       ! Soil layer thicknesses (m)
 data Dzsnow / 0.1, 0.2, 0.4 /
@@ -83,7 +83,7 @@ end module GRID
 ! Input / output unit numbers
 !-----------------------------------------------------------------------
 module IOUNITS
-integer, parameter :: &
+integer*8, parameter :: &
   udmp = 11,         &! Dump file unit number
   umet = 21,         &! Driving file unit number
   uout = 31,         &! Output file unit number
@@ -94,7 +94,7 @@ end module IOUNITS
 ! Model options
 !-----------------------------------------------------------------------
 module MODELS
-integer :: &
+integer*8 :: &
   am,                &! Snow albedo model        0 - diagnostic
                       !                          1 - prognostic
   cm,                &! Snow conductivity model  0 - fixed
@@ -103,7 +103,7 @@ integer :: &
                       !                          1 - prognostic
   em,                &! Surface exchange model   0 - fixed
                       !                          1 - stability correction
-  hm                  ! Snow hydraulics model    0 - free draining 
+  hm                  ! Snow hydraulics model    0 - free draining
                       !                          1 - bucket storage
 end module MODELS
 
@@ -112,7 +112,7 @@ end module MODELS
 !-----------------------------------------------------------------------
 module PARAMETERS
 ! Snow parameters
-real :: &
+real*8 :: &
   asmx,              &! Maximum albedo for fresh snow
   asmn,              &! Minimum albedo for melting snow
   bstb,              &! Stability slope parameter
@@ -131,7 +131,7 @@ real :: &
   Wirr,              &! Irreducible liquid water content of snow
   z0sn                ! Snow roughness length (m)
 ! Surface parameters
-real :: &
+real*8 :: &
   alb0,              &! Snow-free ground albedo
   gsat,              &! Surface conductance for saturated soil (m/s)
   z0sf                ! Snow-free roughness length (m)
@@ -141,7 +141,7 @@ end module PARAMETERS
 ! Soil properties
 !-----------------------------------------------------------------------
 module SOIL_PARAMS
-real :: &
+real*8 :: &
   b,                 &! Clapp-Hornberger exponent
   fcly,              &! Soil clay fraction
   fsnd,              &! Soil sand fraction
@@ -153,26 +153,26 @@ real :: &
 end module SOIL_PARAMS
 
 !-----------------------------------------------------------------------
-! Model state variables  
+! Model state variables
 !-----------------------------------------------------------------------
 module STATE_VARIABLES
 use GRID, only : &
   Nsmax,             &! Maximum number of snow layers
   Nsoil               ! Number of soil layers
 ! Surface state variables
-real :: &
+real*8 :: &
   Tsurf               ! Surface skin temperature (K)
 ! Snow state variables
-integer :: &
+integer*8 :: &
   Nsnow               ! Number of snow layers
-real :: &
+real*8 :: &
   albs,              &! Snow albedo
   Ds(Nsmax),         &! Snow layer thicknesses (m)
   Sice(Nsmax),       &! Ice content of snow layers (kg/m^2)
   Sliq(Nsmax),       &! Liquid content of snow layers (kg/m^2)
   Tsnow(Nsmax)        ! Snow layer temperatures (K)
 ! Soil state variables
-real :: &
+real*8 :: &
   theta(Nsoil),      &! Volumetric moisture content of soil layers
   Tsoil(Nsoil)        ! Soil layer temperatures (K)
 end module STATE_VARIABLES

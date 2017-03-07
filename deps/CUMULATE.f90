@@ -22,7 +22,7 @@ use STATE_VARIABLES, only : &
 
 implicit none
 
-real, intent(in) :: &
+real*8, intent(in) :: &
   alb,               &! Albedo
   Roff,              &! Runoff from snow (kg/m^2)
   snowdepth,         &! Snow depth (m)

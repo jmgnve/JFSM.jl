@@ -19,7 +19,7 @@ use DIAGNOSTICS, only : &
 
 implicit none
 
-real :: &
+real*8 :: &
   alb                 ! Effective albedo
 
 if (SWint > 0) then

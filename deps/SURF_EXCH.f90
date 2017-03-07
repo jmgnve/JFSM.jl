@@ -27,13 +27,13 @@ use STATE_VARIABLES, only : &
 
 implicit none
 
-real, intent(in) :: &
+real*8, intent(in) :: &
   z0                  ! Roughness length for momentum (m)
 
-real, intent(out) :: &
+real*8, intent(out) :: &
   CH                  ! Transfer coefficient for heat and moisture
 
-real :: &
+real*8 :: &
   CD,                &! Drag coefficient
   fh,                &! Stability correction
   RiB,               &! Bulk Richardson number

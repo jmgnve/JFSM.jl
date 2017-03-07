@@ -10,7 +10,7 @@ use GRID, only : &
 implicit none
 
 ! Surface properties
-real :: &
+real*8 :: &
   alb,               &! Albedo
   CH,                &! Transfer coefficient for heat and moisture
   Dz1,               &! Surface layer thickness (m)
@@ -20,19 +20,19 @@ real :: &
   z0                  ! Surface roughness length (m)
 
 ! Snow properties
-real :: &
+real*8 :: &
   ksnow(Nsmax),      &! Thermal conductivity of snow (W/m/K)
-  rfs,               &! Fresh snow density (kg/m^3) 
+  rfs,               &! Fresh snow density (kg/m^3)
   snowdepth,         &! Snow depth (m)
   SWE                 ! Snow water equivalent (kg/m^2)
 
  ! Soil properties
-real :: &
+real*8 :: &
   csoil(Nsoil),      &! Areal heat capacity of soil (J/K/m^2)
   ksoil(Nsoil)        ! Thermal conductivity of soil (W/m/K)
 
 ! Fluxes
-real :: &
+real*8 :: &
   Esnow,             &! Snow sublimation rate (kg/m^2/s)
   Gsurf,             &! Heat flux into surface (W/m^2)
   Gsoil,             &! Heat flux into soil (W/m^2)

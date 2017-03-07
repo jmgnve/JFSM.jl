@@ -5,23 +5,23 @@ subroutine TRIDIAG(Nvec,Nmax,a,b,c,r,x)
 
 implicit none
 
-integer, intent(in) :: &
+integer*8, intent(in) :: &
   Nvec,              &! Vector length
   Nmax                ! Maximum vector length
 
-real, intent(in) :: &
+real*8, intent(in) :: &
   a(Nmax),           &! Below-diagonal matrix elements
   b(Nmax),           &! Diagonal matrix elements
   c(Nmax),           &! Above-diagonal matrix elements
   r(Nmax)             ! Matrix equation rhs
 
-real, intent(out) :: &
+real*8, intent(out) :: &
   x(Nmax)             ! Solution vector
 
-integer :: n          ! Loop counter 
+integer*8 :: n          ! Loop counter 
 
 ! Work space   
-real :: beta, gamma(Nvec) 
+real*8 :: beta, gamma(Nvec) 
 
 beta = b(1)
 x(1) = r(1) / beta

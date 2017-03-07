@@ -46,7 +46,7 @@ use STATE_VARIABLES, only : &
 
 implicit none
 
-real, intent(in) :: &
+real*8, intent(in) :: &
   Esnow,             &! Snow sublimation rate (kg/m^2/s)
   Gsurf,             &! Heat flux into surface (W/m^2)
   ksnow(Nsmax),      &! Thermal conductivity of snow (W/m/K)
@@ -54,13 +54,13 @@ real, intent(in) :: &
   Melt,              &! Surface melt rate (kg/m^2/s)
   rfs                 ! Fresh snow density (kg/m^3)
 
-real, intent(out) :: &
+real*8, intent(out) :: &
   Gsoil,             &! Heat flux into soil (W/m^2)
   Roff,              &! Runoff from snow (kg/m^2)
   snowdepth,         &! Snow depth (m)
   SWE                 ! Snow water equivalent (kg/m^2) 
 
-real :: &
+real*8 :: &
   a(Nsmax),          &! Below-diagonal matrix elements
   b(Nsmax),          &! Diagonal matrix elements
   c(Nsmax),          &! Above-diagonal matrix elements
@@ -74,7 +74,7 @@ real :: &
   U(Nsmax),          &! Layer internal energy contents (J/m^2)
   W(Nsmax)            ! Liquid contents before adjustment (kg/m^2)
 
-real :: &
+real*8 :: &
   coldcont,          &! Layer cold content (J/m^2)
   dnew,              &! New snow layer thickness (m)
   dSice,             &! Change in layer ice content (kg/m^2)
@@ -84,7 +84,7 @@ real :: &
   tau,               &! Snow compaction timescale (s)
   wt                  ! Layer weighting
 
-integer :: & 
+integer*8 :: & 
   k,                 &! Snow layer pointer
   knew,              &! New snow layer pointer
   kold,              &! Old snow layer pointer

@@ -71,7 +71,7 @@ use STATE_VARIABLES, only : &
 
 implicit none
 
-real, intent(out) :: &
+real*8, intent(out) :: &
   alb,               &! Albedo
   csoil(Nsoil),      &! Areal heat capacity of soil (J/K/m^2)
   Dz1,               &! Surface layer thickness (m)
@@ -83,10 +83,10 @@ real, intent(out) :: &
   Ts1,               &! Surface layer temperature (K)
   z0                  ! Surface roughness length (m)
 
-integer :: &
+integer*8 :: &
   k                   ! Level counter
 
-real :: &
+real*8 :: &
   alim,              &! Limiting albedo
   dPsidT,            &! Rate of change of ice potential with temperature (m/K)
   dthudT,            &! Rate of change of unfrozen soil moisture content with temperature (1/K)

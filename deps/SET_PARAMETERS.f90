@@ -63,7 +63,7 @@ implicit none
 !character(len=70) :: &
 !  met_file            ! Driving file name
 
-real :: &
+real*8 :: &
   hcon_min            ! Thermal conductivity of soil minerals (W/m/K)
 
 !! Model configuration

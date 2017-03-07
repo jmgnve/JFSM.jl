@@ -64,23 +64,23 @@ implicit none
 
 ! Input variables
 
-real, intent(in) :: year_in, month_in, day_in, hour_in, SW_in, LW_in, Sf_in, Rf_in, Ta_in, RH_in, Ua_in, Ps_in
+real*8, intent(in) :: year_in, month_in, day_in, hour_in, SW_in, LW_in, Sf_in, Rf_in, Ta_in, RH_in, Ua_in, Ps_in
 
-real :: RH  ! Relative humidity (%)
+real*8 :: RH  ! Relative humidity (%)
 
 ! State variables
 
-integer, intent(out) :: Nsnow_in
+integer*8, intent(out) :: Nsnow_in
 
-real, intent(out) :: albs_in, Tsurf_in
+real*8, intent(out) :: albs_in, Tsurf_in
 
-real, intent(out) :: Ds_in(Nsmax), Sice_in(Nsmax), Sliq_in(Nsmax), Tsnow_in(Nsmax)
+real*8, intent(out) :: Ds_in(Nsmax), Sice_in(Nsmax), Sliq_in(Nsmax), Tsnow_in(Nsmax)
 
-real, intent(out) :: theta_in(Nsoil), Tsoil_in(Nsoil)
+real*8, intent(out) :: theta_in(Nsoil), Tsoil_in(Nsoil)
 
 ! Model combinations
 
-integer, intent(in) :: am_in, cm_in, dm_in, em_in, hm_in
+integer*8, intent(in) :: am_in, cm_in, dm_in, em_in, hm_in
 
 ! Input variables
 

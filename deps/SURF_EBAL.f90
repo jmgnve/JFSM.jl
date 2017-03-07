@@ -30,7 +30,7 @@ use STATE_VARIABLES, only : &
 
 implicit none
 
-real, intent(in) :: &
+real*8, intent(in) :: &
   alb,               &! Albedo
   CH,                &! Transfer coefficient for heat and moisture
   Dz1,               &! Surface layer thickness (m)
@@ -38,12 +38,12 @@ real, intent(in) :: &
   ksurf,             &! Surface layer thermal conductivity (W/m/K)
   Ts1                 ! Surface layer temperature (K)
 
-real, intent(out) :: &
+real*8, intent(out) :: &
   Esnow,             &! Snow sublimation rate (kg/m^2/s)
   Gsurf,             &! Heat flux into surface (W/m^2)
   Melt                ! Surface melt rate (kg/m^2/s)
 
-real :: &
+real*8 :: &
   D,                 &! dQsat/dT (1/K)
   dE,                &! Change in surface moisture flux (kg/m^2/s)
   dG,                &! Change in surface heat flux (W/m^2)

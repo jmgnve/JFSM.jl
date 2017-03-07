@@ -2,211 +2,166 @@
 # Load packages
 
 using JFSM
+#using Plots
 using PyPlot
 using Distributions
 
-# States for time correlated noise
-
-type q_noise
-	q_SW::Float64
-	q_LW::Float64
-	q_P::Float64
-	q_Ta::Float64
-	q_RH::Float64
-	q_Ua::Float64
-end
-
-
-# Time correlated noise
-
-function timecorr_noise(q, timestep, timedecorr)
-
-	alfa = 1 - timestep/timedecorr;
-
-	q = alfa*q + sqrt(1-alfa^2)*randn();
-
-	return q
-
-end
-
-# Resampling function
-
-function resample(wk)
-
-	Ns = length(wk);
-
-	u = cumprod(rand(Ns) .^ (1./collect(Float64, Ns:-1:1)));
-
-	u = u[length(u):-1:1];
-
-	wc = cumsum(wk);
-
-	label = zeros(Int64, Ns);
-
-	k = 1;
-	for i = 1:Ns
-		while wc[k] < u[i]
-			k = k + 1;
-		end
-		label[i] = k;
-	end
-
-	return label
-
-end
 
 # Load data
 
-metdata = readdlm(joinpath(dirname(@__FILE__), "..", "data", "met_CdP_0506.txt"), Float32);
-valdata = readdlm(joinpath(dirname(@__FILE__), "..", "data", "obs_CdP_0506.txt"), Float32);
+function load_data()
 
-valdata[valdata .== -99] = NaN;
+  # Load data
 
-dates_met = map(DateTime, metdata[:,1], metdata[:,2], metdata[:,3], metdata[:,4]);
-dates_val = map(DateTime, valdata[:,1], valdata[:,2], valdata[:,3]);
+  metdata = readdlm(joinpath(dirname(@__FILE__), "..", "data", "met_CdP_0506.txt"))
+  valdata = readdlm(joinpath(dirname(@__FILE__), "..", "data", "obs_CdP_0506.txt"))
+
+  prec = metdata[:, 7] + metdata[:, 8]
+
+  metdata = hcat(metdata, prec)
+
+  valdata[valdata .== -99] = NaN
+
+  dates_met = map(DateTime, metdata[:,1], metdata[:,2], metdata[:,3], metdata[:,4])
+  dates_val = map(DateTime, valdata[:,1], valdata[:,2], valdata[:,3])
+
+  return dates_met, metdata, dates_val, valdata
+
+end
+
+
+# Load data
+
+dates_met, metdata, dates_val, valdata = load_data()
 
 # Settings
 
-npart = 500;
+npart = 500
+thres_prec = 273.6890
+m_prec = 0.3051
+p_corr = 1.0
+timestep = 1.0
 
-ntimes = size(metdata,1);
+ntimes = size(metdata,1)
 
 # Initial states
 
-md = [FsmType(1, 1, 1, 1, 0) for i in 1:npart];
+md = [FsmType(1, 1, 1, 1, 0) for i in 1:npart]
 
-q_vec = [q_noise(randn(), randn(), randn(), randn(), randn(), randn()) for i in 1:npart];
+q_vec = [q_noise(randn(), randn(), randn(), randn(), randn(), randn()) for i in 1:npart]
 
 # Allocate input array
 
-ip = Array(FsmInput, npart);
+ip = Array(FsmInput, npart)
 
 # Allocate output array
 
-od = zeros(Float32, ntimes, npart);
+od = zeros(ntimes, npart)
 
-hs_sim = zeros(Float32, npart);
+hs_sim = zeros(npart)
 
-res = zeros(Float32, ntimes, 3);
+res = zeros(ntimes, 3)
 
 # Initilize particles
 
-wk = ones(npart) / npart;
+wk = ones(npart) / npart
+
 
 # Loop over time
 
 for itime = 1:ntimes
 
-	# Assign inputs
+  # Run the model for all particles
 
-	for ipart in 1:npart
+  for ipart = 1:npart
 
-		# Time
+    # Handle input data
 
-		year  = metdata[itime, 1];
-		month = metdata[itime, 2];
-		day   = metdata[itime, 3];
-		hour  = metdata[itime, 4];
+    year  = metdata[itime, 1]
+    month = metdata[itime, 2]
+    day   = metdata[itime, 3]
+    hour  = metdata[itime, 4]
+    SW    = metdata[itime, 5]
+    LW    = metdata[itime, 6]
+    P     = metdata[itime, 7] + metdata[itime, 8]
+    Ta    = metdata[itime, 9]
+    RH    = metdata[itime, 10]
+    Ua    = metdata[itime, 11]
+    Ps    = metdata[itime, 12]
 
-		# SW
+    SW, LW, P, Ta, RH, Ua = perturb_input(q_vec, ipart, timestep, SW, LW, P, Ta, RH, Ua)
 
-		SW = metdata[itime, 5];
+    Sf = precip_solid(P, Ta, thres_prec, p_corr, m_prec)
 
-		if SW > 0.
-			SW_noise = Normal(0, min(109.1, SW));
-			SW = SW + Float32(rand(SW_noise));
-			SW = max(0, SW);
-		end
+    Rf = precip_liquid(P, Ta, thres_prec, p_corr, m_prec)
 
-		# LW
+    # Run the model
 
-		LW_noise = Normal(0, 20.8);
-		LW = metdata[itime, 6] + Float32(rand(LW_noise));
+    ip[ipart] = FsmInput(year, month, day, hour, SW, LW, Sf, Rf, Ta, RH, Ua, Ps)
 
-		# Sf
+    hs_sim[ipart] = run_fsm(md[ipart], ip[ipart])
 
-		Sf_noise = Uniform(0.5, 1.5);
-		Sf = metdata[itime, 7] * Float32(rand(Sf_noise));
+  end
 
-		# Rf
+  # Find observation
 
-		Rf_noise = Uniform(0.5, 1.5);
-		Rf = metdata[itime, 8] * Float32(rand(Rf_noise));
+  iobs = find(dates_val .== dates_met[itime])
 
-		# Ta
+  hs_obs = valdata[iobs, 6]
 
-		Ta_noise = Normal(0, 0.9);
-		Ta = metdata[itime, 9] + Float32(rand(Ta_noise));
+  # Run particle filter
 
+  if !isempty(hs_obs) && !isnan(hs_obs[1])
 
-		RH    = metdata[itime, 10];
-		Ua    = metdata[itime, 11];
-		Ps    = metdata[itime, 12];
+    for ipart = 1:npart
+      wk[ipart] = pdf(Normal(hs_obs[1], max(0.1 * hs_obs[1], 0.05)), hs_sim[ipart]) * wk[ipart]
+    end
 
+    if sum(wk) > 0.0
+      wk = wk / sum(wk)
+    else
+      wk = ones(npart) / npart
+    end
 
-		ip[ipart] = FsmInput(year, month, day, hour, SW, LW, Sf, Rf, Ta, RH, Ua, Ps);
+    # Perform resampling
 
-	end
+    Neff = 1 / sum(wk.^2)
 
-	# Run model
+    if round(Int64, Neff) < round(Int64, npart * 0.8)
 
-	for ipart = 1:npart
+      println("Resampled at step: $itime")
 
-		hs_sim[ipart] =  run_fsm(md[ipart], ip[ipart]);
+      indx = resample(wk)
 
-	end
+      md  = [deepcopy(md[i]) for i in indx]
 
-	# Find observation
+      q_vec = [deepcopy(q_vec[i]) for i in indx]
 
-	iobs = find(dates_val .== dates_met[itime]);
+      wk = ones(npart) / npart
 
-	hs_obs = valdata[iobs, 6];
+    end
 
-	# Run particle filter
+  end
 
-	if !isempty(hs_obs) && !isnan(hs_obs[1])
+  # Store results
 
-		for ipart = 1:npart
-			wk[ipart] = pdf(Normal(hs_obs[1], max(0.1 * hs_obs[1], 0.05)), hs_sim[ipart]) * wk[ipart];
-		end
-
-		if sum(wk) > 0.0
-			wk = wk / sum(wk);
-		else
-			wk = ones(npart) / npart;
-		end
-
-		# Perform resampling
-
-		Neff = 1 / sum(wk.^2);
-
-		if round(Int64, Neff) < round(Int64, npart * 0.8)
-
-			println("Resampled at step: $itime")
-
-			indx = resample(wk);
-
-			md  = [deepcopy(md[i]) for i in indx];
-
-			wk = ones(npart) / npart;
-
-		end
-
-	end
-
-	# Store results
-
-	res[itime, 1] = sum(wk .* hs_sim);
-	res[itime, 2] = minimum(hs_sim);
-	res[itime, 3] = maximum(hs_sim);
+  res[itime, 1] = sum(wk .* hs_sim)
+  res[itime, 2] = minimum(hs_sim)
+  res[itime, 3] = maximum(hs_sim)
 
 end
 
 # Plot results
 
-fig = plt[:figure](figsize = (12,7));
+fig = plt[:figure](figsize = (12,7))
 
-plt[:style][:use]("ggplot");
+plt[:style][:use]("ggplot")
 
-plt[:plot](dates_val, valdata[:,6], linewidth = 1.2, color = "k", label = "obs", zorder = 1);
-plt[:fill_between](dates_met, res[:, 3], res[:, 2], facecolor = "r", edgecolor = "r", label = "sim", alpha = 0.55, zorder = 2);
+plt[:plot](dates_val, valdata[:,6], linewidth = 1.2, color = "k", label = "Observed", zorder = 1)
+plt[:fill_between](dates_met, res[:, 3], res[:, 2], facecolor = "r", edgecolor = "r", label = "Simulated", alpha = 0.55, zorder = 2)
+plt[:legend]()
+
+#plot(dates_met, res[:, 3], fillrange = res[:, 2], color = "red", fillalpha = 0.5, linealpha = 0.5, label = "sim")
+
+#plot(dates_met, [res[:, 3], res[:, 2]], fillrange = res[:, 2], color = "red", linealpha = 0.5, fillalpha = 0.5, label = "", grid = false)
+#plot!(dates_val, valdata[:,6], linewidth = 1.2, color = "k")

@@ -15,15 +15,15 @@ use STATE_VARIABLES, only : &
 
 implicit none
 
-real, intent(in) :: &
+real*8, intent(in) :: &
   csoil(Nsoil),      &! Areal heat capacity of soil (J/K/m^2)
   Gsoil,             &! Heat flux into soil (W/m^2)
   ksoil(Nsoil)        ! Thermal conductivity of soil (W/m/K)
 
-integer :: &
+integer*8 :: &
   k                   ! Level counter
 
-real :: &
+real*8 :: &
   a(Nsoil),          &! Below-diagonal matrix elements
   b(Nsoil),          &! Diagonal matrix elements
   c(Nsoil),          &! Above-diagonal matrix elements

@@ -3,11 +3,11 @@ using Base.Test
 
 # Load driving data
 
-metdata = readdlm(joinpath(dirname(@__FILE__), "..", "data", "met_CdP_0506.txt"), Float32);
+metdata = readdlm(joinpath(dirname(@__FILE__), "..", "data", "met_CdP_0506.txt"));
 
 # Load data from fortran run
 
-valdata = readdlm(joinpath(dirname(@__FILE__), "..", "data", "out_CdP_0506.txt"), Float32);
+valdata = readdlm(joinpath(dirname(@__FILE__), "..", "data", "out_CdP_0506.txt"));
 
 # Model data
 
@@ -23,7 +23,4 @@ hs_old = valdata[:, 6];
 
 # Tests
 
-hs_new = round(hs_new, 3);
-hs_old = round(hs_old, 3);
-
-@test all(hs_new .== hs_old)
+@test maximum(abs(hs_new-hs_old)) < 0.01
