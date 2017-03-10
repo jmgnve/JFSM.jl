@@ -1,5 +1,5 @@
 
-# Type definitions
+# Model state variables and choices for model combinations 
 
 type FsmType
 
@@ -21,6 +21,8 @@ type FsmType
 
 end
 
+# Model input variables
+
 type FsmInput
 
 	year::Float64
@@ -39,7 +41,7 @@ type FsmInput
 end
 
 
-# Outer constructor
+# Outer constructor for initilizing model state variables
 
 function FsmType(am, cm, dm, em, hm)
 
@@ -88,7 +90,7 @@ function FsmType(am, cm, dm, em, hm)
 end
 
 
-# Run fsm
+# Run the model for a time series of meteorological input data 
 
 function run_fsm(md::FsmType, metdata)
 
@@ -138,7 +140,7 @@ function run_fsm(md::FsmType, metdata)
 end
 
 
-# Run only one time step
+# Run the model for only one time step using FsmInput type
 
 function run_fsm(md::FsmType, id::FsmInput)
 
