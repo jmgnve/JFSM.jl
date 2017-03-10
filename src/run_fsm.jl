@@ -38,6 +38,7 @@ type FsmInput
 
 end
 
+
 # Outer constructor
 
 function FsmType(am, cm, dm, em, hm)
@@ -86,6 +87,7 @@ function FsmType(am, cm, dm, em, hm)
 
 end
 
+
 # Run fsm
 
 function run_fsm(md::FsmType, metdata)
@@ -116,14 +118,14 @@ function run_fsm(md::FsmType, metdata)
 		# Call fsm
 
 		ccall((:fsm_, fsm), Void, (Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
-								   						 Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
-								   				 		 Ptr{Float64}, Ptr{Float64},
-								   				 		 Ptr{Float64},Ptr{Float64},Ptr{Int64},Ptr{Float64},Ptr{Float64},
-								   				 		 Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
-								   				 		 Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64}),
-								   				 		 &year, &month, &day, &hour, &SW, &LW, &Sf, &Rf, &Ta, &RH, &Ua, &Ps,
-								   				 		 md.albs, md.Ds, md.Nsnow, md.Sice, md.Sliq, md.theta, md.Tsnow, md.Tsoil, md.Tsurf,
-								   				 		 &md.am, &md.cm, &md.dm, &md.em, &md.hm)
+			                   Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
+				           Ptr{Float64},Ptr{Float64},
+				           Ptr{Float64},Ptr{Float64},Ptr{Int64},Ptr{Float64},Ptr{Float64},
+					   Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
+					   Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64}),
+					   &year, &month, &day, &hour, &SW, &LW, &Sf, &Rf, &Ta, &RH, &Ua, &Ps,
+					   md.albs, md.Ds, md.Nsnow, md.Sice, md.Sliq, md.theta, md.Tsnow, md.Tsoil, md.Tsurf,
+					   &md.am, &md.cm, &md.dm, &md.em, &md.hm)
 
 		# Save results
 
@@ -143,14 +145,14 @@ function run_fsm(md::FsmType, id::FsmInput)
 	# Call fsm
 
 	ccall((:fsm_, fsm), Void, (Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
-														 Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
-														 Ptr{Float64}, Ptr{Float64},
-														 Ptr{Float64},Ptr{Float64},Ptr{Int64},Ptr{Float64},Ptr{Float64},
-														 Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
-														 Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64}),
-														 &id.year, &id.month, &id.day, &id.hour, &id.SW, &id.LW, &id.Sf, &id.Rf, &id.Ta, &id.RH, &id.Ua, &id.Ps,
-														 md.albs, md.Ds, md.Nsnow, md.Sice, md.Sliq, md.theta, md.Tsnow, md.Tsoil, md.Tsurf,
-														 &md.am, &md.cm, &md.dm, &md.em, &md.hm)
+				   Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
+				   Ptr{Float64},Ptr{Float64},
+				   Ptr{Float64},Ptr{Float64},Ptr{Int64},Ptr{Float64},Ptr{Float64},
+				   Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
+				   Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64}),
+				   &id.year, &id.month, &id.day, &id.hour, &id.SW, &id.LW, &id.Sf, &id.Rf, &id.Ta, &id.RH, &id.Ua, &id.Ps,
+				   md.albs, md.Ds, md.Nsnow, md.Sice, md.Sliq, md.theta, md.Tsnow, md.Tsoil, md.Tsurf,
+				   &md.am, &md.cm, &md.dm, &md.em, &md.hm)
 
 	# Save results
 
