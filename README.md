@@ -16,7 +16,7 @@ The example below runs one model combination and plots the results (requires the
 
 ```julia
 using JFSM
-using Plots
+using PyPlot
 
 am = 0;
 cm = 0;
@@ -33,5 +33,19 @@ hs = run_fsm(md, metdata);
 plot(hs)
 
 ```
+
+The example folder contains code for running all model combinations and also a simple particle filter implementation:
+
+```julia
+cd(joinpath(Pkg.dir("JFSM"), "examples"))
+
+include("run_all_combinations.jl")
+
+include("test_pfilter.jl")
+```
+
+
+
+
 
 
