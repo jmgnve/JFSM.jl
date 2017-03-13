@@ -2,10 +2,9 @@
 # Load packages
 
 using JFSM
-#using PyPlot
+using PyPlot
 using Distributions
 using ProgressMeter
-#using Plots
 
 # Load data
 
@@ -35,7 +34,7 @@ dates_met, metdata, dates_val, valdata = load_data()
 
 # Settings
 
-npart = 2000
+npart = 100
 thres_prec = 273.6890
 m_prec = 0.3051
 p_corr = 1.0
@@ -67,7 +66,7 @@ wk = ones(npart) / npart
 
 # Loop over time
 
-@showprogress 1 "Computing..." for itime = 1:(365*24)   # ntimes
+@showprogress 1 "Computing..." for itime = 1:ntimes
 
   # Run the model for all particles
 
@@ -87,7 +86,7 @@ wk = ones(npart) / npart
     Ua    = metdata[itime, 11]
     Ps    = metdata[itime, 12]
 
-    # SW, LW, P, Ta, RH, Ua = perturb_input(q_vec, ipart, timestep, SW, LW, P, Ta, RH, Ua)
+    SW, LW, P, Ta, RH, Ua = perturb_input(q_vec, ipart, timestep, SW, LW, P, Ta, RH, Ua)
 
     Sf = precip_solid(P, Ta, thres_prec, p_corr, m_prec)
 
@@ -101,45 +100,45 @@ wk = ones(npart) / npart
 
   end
 
-  # # Find observation
+  # Find observation
 
-  # iobs = find(dates_val .== dates_met[itime])
+  iobs = find(dates_val .== dates_met[itime])
 
-  # hs_obs = valdata[iobs, 5]
+  hs_obs = valdata[iobs, 5]
 
-  # # Run particle filter
+  # Run particle filter
 
-  # if !isempty(hs_obs) && !isnan(hs_obs[1])
+  if !isempty(hs_obs) && !isnan(hs_obs[1])
 
-  #   for ipart = 1:npart
-  #     wk[ipart] = pdf(Normal(hs_obs[1], max(0.1 * hs_obs[1], 0.05)), hs_sim[ipart]) * wk[ipart]
-  #   end
+    for ipart = 1:npart
+      wk[ipart] = pdf(Normal(hs_obs[1], max(0.1 * hs_obs[1], 0.05)), hs_sim[ipart]) * wk[ipart]
+    end
 
-  #   if sum(wk) > 0.0
-  #     wk = wk / sum(wk)
-  #   else
-  #     wk = ones(npart) / npart
-  #   end
+    if sum(wk) > 0.0
+      wk = wk / sum(wk)
+    else
+      wk = ones(npart) / npart
+    end
 
-  #   # Perform resampling
+    # Perform resampling
 
-  #   Neff = 1 / sum(wk.^2)
+    Neff = 1 / sum(wk.^2)
 
-  #   if round(Int64, Neff) < round(Int64, npart * 0.8)
+    if round(Int64, Neff) < round(Int64, npart * 0.8)
 
-  #     #println("Resampled at step: $itime")
+      #println("Resampled at step: $itime")
 
-  #     indx = resample(wk)
+      indx = resample(wk)
 
-  #     md  = [deepcopy(md[i]) for i in indx]
+      md  = [deepcopy(md[i]) for i in indx]
 
-  #     q_vec = [deepcopy(q_vec[i]) for i in indx]
+      q_vec = [deepcopy(q_vec[i]) for i in indx]
 
-  #     wk = ones(npart) / npart
+      wk = ones(npart) / npart
 
-  #   end
+    end
 
-  # end
+  end
 
   # Store results
 
@@ -151,17 +150,18 @@ end
 
 # Plot results
 
-# fig = plt[:figure](figsize = (12,7))
+fig = plt[:figure](figsize = (12,7))
 
-# plt[:style][:use]("ggplot")
+plt[:style][:use]("ggplot")
 
-# plt[:plot](dates_val, valdata[:,5], linewidth = 1.2, color = "k", label = "Observed", zorder = 1)
-# plt[:fill_between](dates_met, res[:, 3], res[:, 2], facecolor = "r", edgecolor = "r", label = "Simulated", alpha = 0.55, zorder = 2)
-# plt[:legend]()
+plt[:plot](dates_val, valdata[:,5], linewidth = 1.2, color = "k", label = "Observed", zorder = 1)
+plt[:fill_between](dates_met, res[:, 3], res[:, 2], facecolor = "r", edgecolor = "r", label = "Simulated", alpha = 0.55, zorder = 2)
+plt[:legend]()
 
+
+
+#using plots
 #plot(dates_met, res[:, 3], fillrange = res[:, 2], color = "red", fillalpha = 0.5, linealpha = 0.5, label = "sim")
-
 #plot(dates_met, [res[:, 3], res[:, 2]], fillrange = res[:, 2], color = "red", linealpha = 0.5, fillalpha = 0.5, label = "", grid = false)
 #plot!(dates_val, valdata[:,5], linewidth = 1.2, color = "k")
-
 # plot([x;x[end:-1:1]],[y1;y2[end:-1:1]], color = :red, linealpha = 0, fillalpha = 0.5, seriestype = :shape, label = "a filled area")

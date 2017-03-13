@@ -7,8 +7,8 @@ using DataFrames
 
 # Load data
 
-metdata = readdlm(joinpath(dirname(@__FILE__), "..", "data", "met_CdP_0506.txt"), Float32)
-valdata = readdlm(joinpath(dirname(@__FILE__), "..", "data", "obs_CdP_0506.txt"), Float32)
+metdata = readdlm(joinpath(dirname(@__FILE__), "..", "data", "met_CdP_all.txt"), Float32)
+valdata = readdlm(joinpath(dirname(@__FILE__), "..", "data", "obs_CdP_all.txt"), Float32)
 
 dates_met = map(DateTime, metdata[:,1], metdata[:,2], metdata[:,3], metdata[:,4])
 dates_val = map(DateTime, valdata[:,1], valdata[:,2], valdata[:,3])
@@ -25,15 +25,19 @@ end
 
 hs = zeros(size(metdata, 1), length(md))
 
+tic()
+
 for i in 1:length(md)
   hs[:, i] = run_fsm(md[i], metdata)
 end
+
+toc()
 
 # Find the best model
 
 df_obs = DataFrame(
     dates  = dates_val,
-    hs_obs = @data(convert(Array{Float64}, valdata[:, 6]))
+    hs_obs = @data(convert(Array{Float64}, valdata[:, 5]))
 )
 
 df_obs[:hs_obs][df_obs[:hs_obs].==-99] = NA
@@ -62,3 +66,11 @@ print("cm = $(md[ibest].cm)\n")
 print("dm = $(md[ibest].dm)\n")
 print("em = $(md[ibest].em)\n")
 print("hm = $(md[ibest].hm)\n")
+
+# Plot results
+
+valdata[valdata .== -99] = NaN
+
+plot(dates_met, hs, color = "gray")
+plot(dates_val, valdata[:, 5], color = "black")
+plot(dates_met, hs[:, ibest], color = "red")
