@@ -4,11 +4,6 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/jmgnve/JFSM.jl/badge.svg?branch=master)](https://coveralls.io/github/jmgnve/JFSM.jl?branch=master)
 
-
-[![Coverage Status](https://coveralls.io/repos/jmgnve/JFSM.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/jmgnve/JFSM.jl?branch=master)
-
-[![codecov.io](http://codecov.io/github/jmgnve/JFSM.jl/coverage.svg?branch=master)](http://codecov.io/github/jmgnve/JFSM.jl?branch=master)
-
 Julia wrapper for the Factorial Snow Model (original code available on this [homepage](https://github.com/RichardEssery/FSM)). For installing the package, run the following code:
 
 ```julia
