@@ -5,6 +5,7 @@ using JFSM
 using PyPlot
 using Distributions
 using ProgressMeter
+using DataAssim
 
 # Load data
 
