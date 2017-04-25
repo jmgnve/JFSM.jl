@@ -43,7 +43,7 @@ timestep = 1.0
 
 ntimes = size(metdata,1)
 
-# Initial states
+# Initial state
 
 md = [FsmType(1, 1, 1, 1, 0) for i in 1:npart]
 
