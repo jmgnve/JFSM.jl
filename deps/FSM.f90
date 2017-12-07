@@ -12,7 +12,7 @@
 subroutine FSM(year_in, month_in, day_in, hour_in, &
 			   SW_in, LW_in, Sf_in, Rf_in, Ta_in, RH_in, Ua_in, Ps_in, &
 			   albs_in, Ds_in, Nsnow_in, Sice_in, Sliq_in, theta_in, Tsnow_in, Tsoil_in, Tsurf_in, &
-			   am_in, cm_in, dm_in, em_in, hm_in)
+			   am_in, cm_in, dm_in, em_in, hm_in, dt_in)
   
 ! Input variables
 
@@ -27,7 +27,8 @@ use DRIVING, only:   &
   Rf,                &! Rainfall rate (kg/m2/s)
   Ta,                &! Air temperature (K)
   Ua,                &! Wind speed (m/s)
-  Ps                  ! Surface pressure (Pa)
+  Ps,                &! Surface pressure (Pa)
+  dt                  ! Timestep (s)
   
 ! State variables
 
@@ -82,6 +83,10 @@ real*8, intent(out) :: theta_in(Nsoil), Tsoil_in(Nsoil)
 
 integer*8, intent(in) :: am_in, cm_in, dm_in, em_in, hm_in
 
+! Model timestep
+
+integer*8, intent(in) :: dt_in
+
 ! Input variables
 
 year  = year_in
@@ -116,6 +121,10 @@ cm = cm_in
 dm = dm_in
 em = em_in
 hm = hm_in
+
+! Timestep
+
+dt = dt_in
 
 ! Call subroutines
 

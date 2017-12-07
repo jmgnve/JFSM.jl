@@ -6,7 +6,7 @@ const fsm = joinpath(dirname(@__FILE__), "..", "deps", "FSM")
 
 export FsmType, FsmInput
 
-export run_fsm
+export run_fsm, run_fsm!
 
 export q_noise, perturb_input
 

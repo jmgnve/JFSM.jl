@@ -9,7 +9,7 @@ use CONSTANTS, only : &
   hcon_sand           ! Thermal conductivity of sand (W/m/K)
 
 use DRIVING, only : &
-  dt,                &! Timestep (s)
+!  dt,                &! Timestep (s)
   zT,                &! Temperature measurement height (m)
   zU,                &! Wind measurement height (m)
   zvar                ! Subtract snow depth from measurement height
@@ -74,7 +74,7 @@ real*8 :: &
 !hm = 0
 
 ! Driving data parameters
-dt = 3600
+!dt = 3600
 zT = 2
 zU = 10
 zvar = .TRUE.

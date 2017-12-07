@@ -94,32 +94,22 @@ end
 
 # Run the model for a time series of meteorological input data 
 
-function run_fsm(md::FsmType, metdata)
-
-    # Allocate output arrays
-
-    hs = zeros(Float64, size(metdata,1));
-
-    # Loop over time
+function run_fsm!(hs, md::FsmType, metdata)
 
     for itime = 1:size(metdata,1)
 
-	# Inputs
-
-	year  = metdata[itime, 1];
-	month = metdata[itime, 2];
-	day   = metdata[itime, 3];
-	hour  = metdata[itime, 4];
-	SW    = metdata[itime, 5];
-	LW    = metdata[itime, 6];
-	Sf    = metdata[itime, 7];
-	Rf    = metdata[itime, 8];
-	Ta    = metdata[itime, 9];
-	RH    = metdata[itime, 10];
-	Ua    = metdata[itime, 11];
-	Ps    = metdata[itime, 12];
-
-	# Call fsm
+	year  = metdata[itime, 1]
+	month = metdata[itime, 2]
+	day   = metdata[itime, 3]
+	hour  = metdata[itime, 4]
+	SW    = metdata[itime, 5]
+	LW    = metdata[itime, 6]
+	Sf    = metdata[itime, 7]
+	Rf    = metdata[itime, 8]
+	Ta    = metdata[itime, 9]
+	RH    = metdata[itime, 10]
+	Ua    = metdata[itime, 11]
+	Ps    = metdata[itime, 12]
 
 	ccall((:fsm_, fsm),
               Void, 
@@ -127,17 +117,26 @@ function run_fsm(md::FsmType, metdata)
 	       Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
 	       Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Int64},
                Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
-               Ptr{Float64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64}),
+               Ptr{Float64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64}),
 	      &year, &month, &day, &hour, &SW, &LW, &Sf, &Rf, &Ta, &RH, &Ua, &Ps,
 	      md.albs, md.Ds, md.Nsnow, md.Sice, md.Sliq, md.theta, md.Tsnow, md.Tsoil, md.Tsurf,
-	      &md.am, &md.cm, &md.dm, &md.em, &md.hm)
+	      &md.am, &md.cm, &md.dm, &md.em, &md.hm, &md.dt)
 
-	# Save results
-
-	hs[itime] = sum(md.Ds);
+	hs[itime] = sum(md.Ds)
 
     end
 
+    return nothing
+
+end
+
+
+function run_fsm(md::FsmType, metdata)
+    
+    hs = zeros(Float64, size(metdata,1))
+    
+    run_fsm!(hs, md::FsmType, metdata)
+    
     return hs
 
 end
@@ -155,14 +154,14 @@ function run_fsm(md::FsmType, id::FsmInput)
 	   Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
 	   Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Int64},
            Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Float64},
-           Ptr{Float64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64}),
+           Ptr{Float64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64},Ptr{Int64}),
 	  &id.year, &id.month, &id.day, &id.hour, &id.SW, &id.LW, &id.Sf, &id.Rf, &id.Ta, &id.RH, &id.Ua, &id.Ps,
 	  md.albs, md.Ds, md.Nsnow, md.Sice, md.Sliq, md.theta, md.Tsnow, md.Tsoil, md.Tsurf,
-	  &md.am, &md.cm, &md.dm, &md.em, &md.hm)
+	  &md.am, &md.cm, &md.dm, &md.em, &md.hm, &md.dt)
 
     # Save results
 
-    hs = sum(md.Ds);
+    hs = sum(md.Ds)
 
     return hs
 
